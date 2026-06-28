@@ -1,27 +1,36 @@
 using Microsoft.AspNetCore.Mvc;
+using Pharmacy.Database;
 
-namespace PharmacyApi.Controllers
+namespace Pharmacy.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class MedicationController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class MedicationController : ControllerBase
+    private readonly PharmacyDbContext _context;
+
+    public MedicationController(PharmacyDbContext context)
     {
-        [HttpGet]
-        public IActionResult Get()
+        _context = context;
+    }
+
+    [HttpGet]
+    public IActionResult Get()
+    {
+        var medications = _context.Medication.ToList();
+        return Ok(medications);
+    }
+
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id)
+    {
+        var medication = _context.Medication.FirstOrDefault(m => m.Id == id);
+
+        if (medication == null)
         {
-            return Ok(MedicationData.Medications);
+            return NotFound();
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(int id)
-        {
-            var medication = MedicationData.Medications
-                .FirstOrDefault(m => m.Id == id);
-
-            if (medication == null)
-                return NotFound();
-
-            return Ok(medication);
-        }
+        return Ok(medication);
     }
 }
