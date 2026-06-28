@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace PharmacyApi.Controllers
 {
@@ -9,19 +7,20 @@ namespace PharmacyApi.Controllers
     public class MedicationController : ControllerBase
     {
         [HttpGet]
-        public ActionResult<IEnumerable<Medication>> Get()
+        public IActionResult Get()
         {
-            return Ok(MedicationData.GetMedications());
+            return Ok(MedicationData.Medications);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Medication> GetById(int id)
+        public IActionResult GetById(int id)
         {
-            var medication = MedicationData.GetMedications().FirstOrDefault(m => m.Id == id);
+            var medication = MedicationData.Medications
+                .FirstOrDefault(m => m.Id == id);
+
             if (medication == null)
-            {
                 return NotFound();
-            }
+
             return Ok(medication);
         }
     }
